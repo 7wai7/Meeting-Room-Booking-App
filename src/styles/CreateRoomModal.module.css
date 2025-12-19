@@ -1,0 +1,61 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.207);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal form {
+  border-radius: var(--radius);
+  background: var(--bg);
+  width: 60%;
+  height: 50%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.modal textarea {
+  display: block;
+  overflow-y: auto;
+  resize: none;
+  outline: none;
+  text-align: justify;
+  white-space: pre-wrap;
+  background-color: unset;
+  flex: 1;
+}
+
+.modal input,
+.modal textarea {
+  width: 100%;
+  color: black;
+  padding: 0.5rem 0.7rem;
+  margin-bottom: 1rem;
+}
+
+.submit_btn {
+  width: 100%;
+  padding: 0.5rem 0;
+  background-color: var(--blue);
+}
+
+.submit_btn[disabled] {
+  background-color: gray;
+}
+
+.error_message {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -40px; /* фіксований відступ */
+  color: var(--red);
+  background-color: rgba(100, 219, 255, 0.238);
+  text-align: center;
+  padding: 0.5rem 0;
+  border-radius: var(--radius);
+}

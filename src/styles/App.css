@@ -9,9 +9,19 @@ main {
   margin-left: 15rem;
   width: 100%;
   padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
 }
 
-img {
+.textarea-autosize {
   display: block;
-  max-width: 100%;
+  overflow: hidden;
+  resize: none;
+  outline: none;
+  text-align: justify;
+  white-space: pre-wrap;
+
+  flex: 1;
+  background-color: unset;
+  width: 100%;
 }

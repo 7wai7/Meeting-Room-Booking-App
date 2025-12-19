@@ -71,6 +71,5 @@
 }
 
 .error_message {
-  color: var(--red);
-  font-size: .9rem;
+  color: var(--red) !important;
 }

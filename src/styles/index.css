@@ -6,7 +6,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  --bg: #f5f7fb;
+  --bg: linear-gradient(180deg, #eef2ff 0%, #f8fafc 60%);
   --radius: 12px;
   --shadow: 0 6px 20px rgba(20, 24, 40, 0.06);
   --muted: #6b7280;
@@ -26,17 +26,28 @@ body {
   min-height: 100vh;
   height: 100%;
   margin: 0;
-  background: linear-gradient(180deg, #eef2ff 0%, #f8fafc 60%);
+  background: var(--bg);
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 button {
   border: 1px solid transparent;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: border-color 0.25s;
   background: none;
 }
-button:hover {
+button,
+input,
+textarea {
+  transition: border-color 0.25s;
+}
+input:hover,
+button:hover,
+textarea:hover {
   border-color: var(--blue);
 }
 button:focus,
@@ -49,7 +60,8 @@ input:focus-visible {
   border: 1px solid var(--blue);
 }
 
-input {
+input,
+textarea {
   background: none;
   border: 1px solid lightgray;
   border-radius: 0.5rem;

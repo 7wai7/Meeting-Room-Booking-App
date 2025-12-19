@@ -2,12 +2,7 @@ import type { AuthData } from "../types/AuthData";
 import type { User, UserStorage } from "../types/User";
 import { delay } from "../utils/delay";
 import { FieldError } from "../utils/FieldError";
-import { read, write } from "../utils/storage";
-
-const LS = {
-  USERS: "demo_users",
-  SESSION: "demo_session", // імітація httpOnly cookie
-};
+import { LS, read, write } from "../utils/storage";
 
 export const registerApi = async (authData: AuthData) => {
   await delay();
