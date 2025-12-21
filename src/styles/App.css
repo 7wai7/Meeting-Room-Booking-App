@@ -25,3 +25,21 @@ main {
   background-color: unset;
   width: 100%;
 }
+
+.loading-spinner {
+  font-size: 5rem; /* керує розміром */
+  width: 1em;
+  aspect-ratio: 1;
+
+  border: 0.12em solid #1e293b;
+  border-top-color: var(--blue);
+
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
