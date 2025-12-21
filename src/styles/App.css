@@ -26,6 +26,15 @@ main {
   width: 100%;
 }
 
+.loading-card {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  align-items: center;
+  gap: 1rem;
+  color: black;
+}
+
 .loading-spinner {
   font-size: 5rem; /* керує розміром */
   width: 1em;

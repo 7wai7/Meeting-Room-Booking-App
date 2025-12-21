@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import css from "../styles/RoomsList.module.css";
 import type { MeetingRoom } from "../types/MeetingRoom";
 import { getAllRoomsApi } from "../services/room.api";
-import LoadingSpinner from "./LoadingSpinner";
 import clsx from "clsx";
 import { memo } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface Props {
   onSelectRoom?: (r: MeetingRoom) => void;
@@ -26,11 +26,17 @@ export const RoomsList = memo(function ({ onSelectRoom }: Props) {
         <p>Title</p>
         <p>Description</p>
       </div>
-      <hr/>
+      <hr />
       {rooms.map((r) => (
         <RoomItem key={r.id} r={r} onClick={() => onSelectRoom?.(r)} />
       ))}
-      {isLoading && <LoadingSpinner className={css.loading_spinner} />}
+      {isLoading && (
+        <LoadingSpinner
+          size={3}
+          className={css.loading_spinner}
+          description="none"
+        />
+      )}
       {error && <span>{error.message}</span>}
     </section>
   );

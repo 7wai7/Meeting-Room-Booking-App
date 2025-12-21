@@ -41,16 +41,18 @@
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .title {
+  line-clamp: 1;
   -webkit-line-clamp: 1;
 }
 
 .loading_spinner {
-  font-size: 3rem;
+  margin-top: 0;
   margin-left: 1rem;
 }

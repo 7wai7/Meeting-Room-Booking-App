@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import LoadingCard from "./LoadingCard";
+import LoadingSpinner from "./LoadingSpinner";
 
 export function ProtectedRoute() {
   const { user, loading } = useAuth();
 
-  if (loading) return <LoadingCard />;
+  if (loading) return <LoadingSpinner />;
   if (!user) return <Navigate to="/auth" replace />;
 
   return <Outlet />;

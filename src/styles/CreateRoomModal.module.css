@@ -17,6 +17,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
 }
 
 .modal textarea {
@@ -46,6 +47,13 @@
 
 .submit_btn[disabled] {
   background-color: gray;
+}
+
+.pending_panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.322);
 }
 
 .error_message {

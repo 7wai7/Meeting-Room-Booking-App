@@ -1,7 +1,9 @@
 import { useState } from "react";
 import css from "../styles/CreateRoomModal.module.css";
-import type { MeetingRoomInput } from "../types/MeetingRoom";
+import type { MeetingRoom, MeetingRoomInput } from "../types/MeetingRoom";
 import { createRoomApi } from "../services/room.api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface Props {
   isOpen: boolean;
@@ -9,19 +11,27 @@ interface Props {
 }
 
 export default function CreateRoomModal({ isOpen, setIsOpen }: Props) {
-  const [error, setError] = useState<string | undefined>(undefined);
   const [input, setInput] = useState<Partial<MeetingRoomInput>>({});
+  const queryClient = useQueryClient();
+  const {
+    mutate: createRoom,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: createRoomApi,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["rooms-list"], (prev: MeetingRoom[]) => [
+        ...prev,
+        data,
+      ]);
+      setIsOpen(false);
+      setInput({});
+    },
+  });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError(undefined);
-
-    createRoomApi(input as MeetingRoomInput)
-      .then(() => {
-        setIsOpen(false);
-        setInput({});
-      })
-      .catch((err) => setError(err.message));
+    createRoom(input as MeetingRoomInput);
   };
 
   if (!isOpen) return;
@@ -56,7 +66,15 @@ export default function CreateRoomModal({ isOpen, setIsOpen }: Props) {
         >
           Create
         </button>
-        {error && <p className={css.error_message}>{error}</p>}
+        {error && <p className={css.error_message}>{error.message}</p>}
+        {isPending && (
+          <div className={css.pending_panel}>
+            <LoadingSpinner
+              size={4}
+              description="none"
+            />
+          </div>
+        )}
       </form>
     </section>
   );
