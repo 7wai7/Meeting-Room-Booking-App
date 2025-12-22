@@ -1,16 +1,15 @@
 import type { AuthData } from "../types/AuthData";
 import type { User, UserStorage } from "../types/User";
 import { delay } from "../utils/delay";
-import { FieldError } from "../utils/FieldError";
 import { LS, read, write } from "../utils/storage";
+import { ValidationError } from "../utils/ValidationError";
 
 export const registerApi = async (authData: AuthData) => {
   await delay();
   const users: UserStorage[] = read(LS.USERS, []);
 
   const ex = users.find((u) => u.email === authData.email.toLowerCase());
-  if (ex)
-    throw new FieldError([{ field: "email", message: "Email already exists" }]);
+  if (ex) throw new ValidationError({ email: { message: "Email already exists" } });
 
   const user: UserStorage = {
     id: crypto.randomUUID(),
@@ -19,7 +18,7 @@ export const registerApi = async (authData: AuthData) => {
 
   write(LS.USERS, [...users, user]);
   write(LS.SESSION, { userId: user.id });
-  
+
   return {
     id: user.id,
     email: user.email,
@@ -33,11 +32,10 @@ export const loginApi = async (authData: AuthData): Promise<User> => {
   const users: UserStorage[] = read(LS.USERS, []);
   const user = users.find((u) => u.email === authData.email.toLowerCase());
 
-  if (!user)
-    throw new FieldError([{ field: "email", message: "User not found" }]);
+  if (!user) throw new ValidationError({ email: { message: "User not found" } });
 
   if (user.password !== authData.password)
-    throw new FieldError([{ field: "password", message: "Invalid password" }]);
+    throw new ValidationError({ password: { message: "Invalid password" } });
 
   write(LS.SESSION, { userId: user.id });
 

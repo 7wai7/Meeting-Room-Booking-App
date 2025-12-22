@@ -5,6 +5,7 @@ import type {
 } from "../types/MeetingRoom";
 import { delay } from "../utils/delay";
 import { LS, read, write } from "../utils/storage";
+import { ValidationError, type ValidationErrors } from "../utils/ValidationError";
 
 export const createRoomApi = async (input: MeetingRoomInput) => {
   await delay();
@@ -32,12 +33,20 @@ export const updateRoomApi = async ({
   input: UpdateMeetingRoomInput;
 }) => {
   await delay();
+
   const rooms: MeetingRoom[] = read(LS.ROOMS, []);
   const index = rooms.findIndex((r) => r.id === id);
   if (index === -1) throw new Error("Room not found");
 
   const room = rooms[index];
   const newRoom = { ...room, ...input };
+
+  const fields: ValidationErrors = {};
+  if (!newRoom.title?.trim()) fields.title = { message: "Title is required" };
+  if (!newRoom.description?.trim())
+    fields.description = { message: "Description is required" };
+  if (Object.entries(fields).length) throw new ValidationError(fields);
+
   rooms[index] = newRoom;
 
   write(LS.ROOMS, rooms);

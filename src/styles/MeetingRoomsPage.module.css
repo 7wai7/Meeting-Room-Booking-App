@@ -58,6 +58,15 @@
   width: 100%;
 }
 
+.details .error_message {
+  color: var(--red);
+  font-size: 0.9rem;
+}
+
+.field_error {
+  border-color: var(--red) !important;
+}
+
 .placeholder {
   color: var(--muted);
 }

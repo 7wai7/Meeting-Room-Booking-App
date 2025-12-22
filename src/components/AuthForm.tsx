@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useFieldErrors from "../hooks/useFieldErrors";
 import css from "../styles/AuthPage.module.css";
 import type { AuthData } from "../types/AuthData";
-import { FieldError } from "../utils/FieldError";
 import { useAuth } from "../hooks/useAuth";
+import { useMutation } from "@tanstack/react-query";
+import { ValidationError } from "../utils/ValidationError";
 
 interface Props {
   isSignup: boolean;
@@ -14,21 +14,17 @@ export default function AuthForm({ isSignup }: Props) {
   const [authData, setAuthData] = useState<Partial<AuthData>>({});
   const { register, login } = useAuth();
   const navigate = useNavigate();
-  const { errors: authErrors, showErrors } = useFieldErrors();
 
-  const onSubmit = () => {
-    (isSignup ? register : login)(authData as AuthData)
-      .then(() => navigate("/"))
-      .catch((err) => {
-        if (err instanceof FieldError) showErrors(err.fields);
-      });
-  };
+  const { mutate: auth, error } = useMutation<void, ValidationError | Error, AuthData>({
+    mutationFn: isSignup ? register : login,
+    onSuccess: () => navigate("/"),
+  });
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit();
+        auth(authData as AuthData);
       }}
     >
       {isSignup && (
@@ -41,8 +37,8 @@ export default function AuthForm({ isSignup }: Props) {
             value={authData?.name || ""}
             onChange={(e) => setAuthData({ ...authData, name: e.target.value })}
           />
-          {authErrors.name && (
-            <p className={css.error_message}>{authErrors.name.message}</p>
+          {error instanceof ValidationError && error?.fields.name && (
+            <p className={css.error_message}>{error?.fields.name.message}</p>
           )}
         </>
       )}
@@ -54,8 +50,8 @@ export default function AuthForm({ isSignup }: Props) {
         value={authData?.email || ""}
         onChange={(e) => setAuthData({ ...authData, email: e.target.value })}
       />
-      {authErrors.email && (
-        <p className={css.error_message}>{authErrors.email.message}</p>
+      {error instanceof ValidationError && error?.fields.email && (
+        <p className={css.error_message}>{error?.fields.email.message}</p>
       )}
       <input
         type="password"
@@ -65,8 +61,8 @@ export default function AuthForm({ isSignup }: Props) {
         value={authData?.password || ""}
         onChange={(e) => setAuthData({ ...authData, password: e.target.value })}
       />
-      {authErrors.password && (
-        <p className={css.error_message}>{authErrors.password.message}</p>
+      {error instanceof ValidationError && error?.fields.password && (
+        <p className={css.error_message}>{error?.fields.password.message}</p>
       )}
       <button
         type="submit"

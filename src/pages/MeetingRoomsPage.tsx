@@ -1,12 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import AutoResizeTextarea from "../components/AutoResizeTextarea";
 import CreateRoomModal from "../components/CreateRoomModal";
 import { RoomsList } from "../components/RoomsList";
 import { useInlineEdit } from "../hooks/useInlineEdit";
 import { updateRoomApi } from "../services/room.api";
 import css from "../styles/MeetingRoomsPage.module.css";
-import type { MeetingRoom } from "../types/MeetingRoom";
-import AutoResizeTextarea from "../components/AutoResizeTextarea";
+import type { MeetingRoom, UpdateMeetingRoomInput } from "../types/MeetingRoom";
+import { ValidationError } from "../utils/ValidationError";
 
 export default function MeetingRoomsPage() {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -45,29 +46,59 @@ interface RoomDetailsProps {
 function RoomDetails({ r }: RoomDetailsProps) {
   const queryClient = useQueryClient();
 
-  const { mutate: updateRoom, error } = useMutation({
+  const {
+    mutate: updateRoom,
+    error,
+    reset,
+  } = useMutation<
+    MeetingRoom,
+    ValidationError | Error,
+    { id: string; input: UpdateMeetingRoomInput }
+  >({
     mutationFn: updateRoomApi,
     onSuccess: (updatedRoom) => {
       queryClient.setQueryData<MeetingRoom[]>(["rooms-list"], (rooms = []) =>
         rooms.map((room) => (room.id === updatedRoom.id ? updatedRoom : room))
       );
     },
+    onError: (error) => {
+      if (error instanceof ValidationError) {
+        // повернути значення назад при помилці
+        if (error?.fields.title) titleEdit.setValue(r.title);
+        if (error?.fields.description) descriptionEdit.setValue(r.description);
+      }
+    },
   });
 
   const titleEdit = useInlineEdit({
     value: r.title,
-    onSave: (title) => updateRoom({ id: r.id, input: { title } }),
+    onSave: (title) => {
+      reset();
+      updateRoom({ id: r.id, input: { title } });
+    },
   });
 
   const descriptionEdit = useInlineEdit({
     value: r.description,
-    onSave: (description) => updateRoom({ id: r.id, input: { description } }),
+    onSave: (description) => {
+      reset();
+      updateRoom({ id: r.id, input: { description } });
+    },
   });
+
+  useEffect(() => {
+    reset();
+  }, [r, reset]);
 
   return (
     <dl className={css.details}>
       <dt>Title</dt>
       <input
+        className={
+          error instanceof ValidationError && error?.fields.title
+            ? css.field_error
+            : ""
+        }
         maxLength={32}
         value={titleEdit.value}
         onChange={(e) => titleEdit.onChange(e.target.value)}
@@ -75,8 +106,17 @@ function RoomDetails({ r }: RoomDetailsProps) {
         onKeyDown={titleEdit.onKeyDown}
       />
 
+      {error instanceof ValidationError && error?.fields.title && (
+        <p className={css.error_message}>{error.fields.title?.message}</p>
+      )}
+
       <dt>Description</dt>
       <AutoResizeTextarea
+        className={
+          error instanceof ValidationError && error?.fields.description
+            ? css.field_error
+            : ""
+        }
         maxLength={5000}
         value={descriptionEdit.value}
         onChange={(e) => descriptionEdit.onChange(e.target.value)}
@@ -84,7 +124,9 @@ function RoomDetails({ r }: RoomDetailsProps) {
         onKeyDown={descriptionEdit.onKeyDown}
       />
 
-      {error && <p>{error.message}</p>}
+      {error instanceof ValidationError && error?.fields.description && (
+        <p className={css.error_message}>{error.fields.description?.message}</p>
+      )}
 
       <hr />
 
