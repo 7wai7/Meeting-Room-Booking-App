@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import type { User } from "../types/User";
 import type { AuthData } from "../types/AuthData";
-import { loginApi, logoutApi, meApi, registerApi } from "../services/auth.api";
+import { loginApi, logoutApi, meApi, registerApi } from "../services/api";
 import { AuthContext } from "../contexts/AuthContext";
 
 export function AuthProvider({ children }: { children: ReactNode }) {

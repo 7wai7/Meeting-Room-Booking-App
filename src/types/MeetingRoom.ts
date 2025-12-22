@@ -5,6 +5,7 @@ export type MeetingRoomInput = {
 
 export type MeetingRoom = {
   id: string;
+  bookingsCount?: number;
 } & MeetingRoomInput;
 
-export type UpdateMeetingRoomInput = Partial<MeetingRoomInput>
+export type UpdateMeetingRoomInput = Partial<MeetingRoomInput>;

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import css from "../styles/RoomsList.module.css";
 import type { MeetingRoom } from "../types/MeetingRoom";
-import { getAllRoomsApi } from "../services/room.api";
 import clsx from "clsx";
 import { memo } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import { getAllRoomsApi } from "../services/api";
 
 interface Props {
   onSelectRoom?: (r: MeetingRoom) => void;

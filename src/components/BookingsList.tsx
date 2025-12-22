@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { memo } from "react";
-import { getAllBookingsApi } from "../services/bookings.api";
+import { getAllBookingsApi } from "../services/api";
 import type { BookingWithRoom } from "../types/Booking";
 import LoadingSpinner from "./LoadingSpinner";
 import css from "../styles/BookingsList.module.css";

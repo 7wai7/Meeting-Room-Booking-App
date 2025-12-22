@@ -3,9 +3,8 @@ import { useState } from "react";
 import css from "../styles/Modal.module.css";
 import GenericModal from "./GenericModal";
 import type { Booking, BookingInput } from "../types/Booking";
-import { createBookingApi } from "../services/bookings.api";
+import { createBookingApi, getAllRoomsApi } from "../services/api";
 import { Select } from "./Select";
-import { getAllRoomsApi } from "../services/room.api";
 
 interface Props {
   isOpen: boolean;

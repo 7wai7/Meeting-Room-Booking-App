@@ -1,11 +1,9 @@
 import type { AuthData } from "../types/AuthData";
-import type { User, UserStorage } from "../types/User";
-import { delay } from "../utils/delay";
+import type { UserStorage } from "../types/User";
 import { LS, read, write } from "../utils/storage";
 import { ValidationError } from "../utils/ValidationError";
 
-export const registerApi = async (authData: AuthData) => {
-  await delay();
+export const registerRaw = (authData: AuthData) => {
   const users: UserStorage[] = read(LS.USERS, []);
 
   const ex = users.find((u) => u.email === authData.email.toLowerCase());
@@ -26,9 +24,7 @@ export const registerApi = async (authData: AuthData) => {
   };
 };
 
-export const loginApi = async (authData: AuthData): Promise<User> => {
-  await delay();
-
+export const loginRaw = (authData: AuthData) => {
   const users: UserStorage[] = read(LS.USERS, []);
   const user = users.find((u) => u.email === authData.email.toLowerCase());
 
@@ -42,9 +38,7 @@ export const loginApi = async (authData: AuthData): Promise<User> => {
   return { id: user.id, email: user.email, name: user.name };
 };
 
-export const meApi = async (): Promise<User | null> => {
-  await delay();
-
+export const meRaw = () => {
   const session = read<{ userId: string } | null>(LS.SESSION, null);
   if (!session) return null;
 
@@ -55,6 +49,6 @@ export const meApi = async (): Promise<User | null> => {
   return { id: user.id, email: user.email, name: user.name };
 };
 
-export async function logoutApi() {
+export function logoutRaw() {
   write(LS.SESSION, null);
 }

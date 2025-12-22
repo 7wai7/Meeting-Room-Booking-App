@@ -4,10 +4,10 @@ import AutoResizeTextarea from "../components/AutoResizeTextarea";
 import CreateRoomModal from "../components/CreateRoomModal";
 import { RoomsList } from "../components/RoomsList";
 import { useInlineEdit } from "../hooks/useInlineEdit";
-import { updateRoomApi } from "../services/room.api";
 import css from "../styles/MeetingRoomsPage.module.css";
 import type { MeetingRoom, UpdateMeetingRoomInput } from "../types/MeetingRoom";
 import { ValidationError } from "../utils/ValidationError";
+import { updateRoomApi } from "../services/api";
 
 export default function MeetingRoomsPage() {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -134,7 +134,7 @@ function RoomDetails({ r }: RoomDetailsProps) {
       <dd className={css.owner}>-</dd>
 
       <dt>Bookings</dt>
-      <dd className={css.bookings}>-</dd>
+      <dd className={css.bookings}>{r.bookingsCount ?? "-"}</dd>
     </dl>
   );
 }

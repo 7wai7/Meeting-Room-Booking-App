@@ -3,12 +3,14 @@ import type {
   MeetingRoomInput,
   UpdateMeetingRoomInput,
 } from "../types/MeetingRoom";
-import { delay } from "../utils/delay";
 import { LS, read, write } from "../utils/storage";
-import { ValidationError, type ValidationErrors } from "../utils/ValidationError";
+import {
+  ValidationError,
+  type ValidationErrors,
+} from "../utils/ValidationError";
+import { getBookingsByRoomIdRaw } from "./bookings.raw";
 
-export const createRoomApi = async (input: MeetingRoomInput) => {
-  await delay();
+export const createRoomRaw = (input: MeetingRoomInput) => {
   const rooms: MeetingRoom[] = read(LS.ROOMS, []);
 
   const newRoom: MeetingRoom = {
@@ -20,20 +22,19 @@ export const createRoomApi = async (input: MeetingRoomInput) => {
   return newRoom;
 };
 
-export const getAllRoomsApi = async (): Promise<MeetingRoom[]> => {
-  await delay();
-  return read(LS.ROOMS, []);
+export const getAllRoomsRaw = () => {
+  const rooms: MeetingRoom[] = read(LS.ROOMS, []);
+  for (const r of rooms) r.bookingsCount = getBookingsByRoomIdRaw(r.id).length;
+  return rooms;
 };
 
-export const updateRoomApi = async ({
+export const updateRoomRaw = ({
   id,
   input,
 }: {
   id: string;
   input: UpdateMeetingRoomInput;
 }) => {
-  await delay();
-
   const rooms: MeetingRoom[] = read(LS.ROOMS, []);
   const index = rooms.findIndex((r) => r.id === id);
   if (index === -1) throw new Error("Room not found");

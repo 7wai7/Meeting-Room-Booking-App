@@ -1,10 +1,8 @@
 import type { Booking, BookingInput, BookingWithRoom } from "../types/Booking";
 import type { MeetingRoom } from "../types/MeetingRoom";
-import { delay } from "../utils/delay";
 import { LS, read, write } from "../utils/storage";
 
-export const createBookingApi = async (input: BookingInput) => {
-  await delay();
+export const createBookingRaw = (input: BookingInput) => {
   const rooms: MeetingRoom[] = read(LS.ROOMS, []);
 
   const room = rooms.find((r) => r.id == input.roomId);
@@ -24,8 +22,7 @@ export const createBookingApi = async (input: BookingInput) => {
   };
 };
 
-export const getAllBookingsApi = async (): Promise<BookingWithRoom[]> => {
-  await delay();
+export const getAllBookingsRaw = () => {
   const rooms: MeetingRoom[] = read(LS.ROOMS, []);
   const bookings: Booking[] = read(LS.BOOKINGS, []);
 
@@ -42,8 +39,12 @@ export const getAllBookingsApi = async (): Promise<BookingWithRoom[]> => {
   return result;
 };
 
-export const deleteBookingApi = async (id: string) => {
-  await delay();
+export const getBookingsByRoomIdRaw = (id: string) => {
+  const bookings: Booking[] = read(LS.BOOKINGS, []);
+  return bookings.filter((booking) => booking.roomId === id);
+};
+
+export const deleteBookingRaw = (id: string) => {
   const bookings: Booking[] = read(LS.BOOKINGS, []);
   const index = bookings.findIndex((booking) => booking.id === id);
   if (index === -1) throw new Error("Not found");

@@ -1,9 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { createRoomApi } from "../services/room.api";
 import css from "../styles/Modal.module.css";
 import type { MeetingRoom, MeetingRoomInput } from "../types/MeetingRoom";
 import GenericModal from "./GenericModal";
+import { createRoomApi } from "../services/api";
 
 interface Props {
   isOpen: boolean;
