@@ -4,16 +4,32 @@ import { LS, read, write } from "../utils/storage";
 
 export const createBookingRaw = (input: BookingInput) => {
   const rooms: MeetingRoom[] = read(LS.ROOMS, []);
+  const bookings: Booking[] = read(LS.BOOKINGS, []);
 
-  const room = rooms.find((r) => r.id == input.roomId);
+  const room = rooms.find((r) => r.id === input.roomId);
   if (!room) throw new Error("Room not found");
+
+  const newStart = new Date(input.start).getTime();
+  const newEnd = new Date(input.end).getTime();
+
+  if (newEnd <= newStart) throw new Error("End time must be after start time");
+
+  // Перевірка на конфлікт часу
+  const hasConflict = bookings.some((b) => {
+    if (b.roomId !== input.roomId) return false;
+    const start = new Date(b.start).getTime();
+    const end = new Date(b.end).getTime();
+    // Перетин інтервалів: [newStart, newEnd] vs [start, end]
+    return newStart < end && newEnd > start;
+  });
+
+  if (hasConflict) throw new Error("Time conflict with existing booking");
 
   const newBooking: Booking = {
     id: crypto.randomUUID(),
     ...input,
   };
 
-  const bookings: Booking[] = read(LS.BOOKINGS, []);
   write(LS.BOOKINGS, [...bookings, newBooking]);
 
   return {
@@ -21,6 +37,7 @@ export const createBookingRaw = (input: BookingInput) => {
     room,
   };
 };
+
 
 export const getAllBookingsRaw = () => {
   const rooms: MeetingRoom[] = read(LS.ROOMS, []);
