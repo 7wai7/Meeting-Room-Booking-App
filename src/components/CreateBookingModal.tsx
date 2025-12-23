@@ -5,6 +5,7 @@ import GenericModal from "./GenericModal";
 import type { Booking, BookingInput } from "../types/Booking";
 import { createBookingApi, getAllRoomsApi } from "../services/api";
 import { Select } from "./Select";
+import { formatDateInput, formatTimeInput, buildLocalISO } from "../utils/date";
 
 interface Props {
   isOpen: boolean;
@@ -53,40 +54,59 @@ export default function CreateBookingModal({ isOpen, setIsOpen }: Props) {
         onChange={(roomId) => setInput((prev) => ({ ...prev, roomId }))}
       />
 
-      {/* Start time */}
+      {/* Date (only date) */}
       <input
-        type="datetime-local"
+        type="date"
         required
-        value={
-          input.start ? new Date(input.start).toISOString().slice(0, 16) : ""
+        value={formatDateInput(input.date)}
+        onChange={(e) =>
+          setInput((prev) => ({
+            ...prev,
+            date: e.target.value,
+          }))
         }
         onClick={(e) => {
           const input = e.currentTarget as HTMLInputElement;
           input.showPicker?.();
         }}
-        onChange={(e) =>
-          setInput((prev) => ({
-            ...prev,
-            start: new Date(e.target.value).toISOString(),
-          }))
-        }
       />
 
-      {/* End time */}
+      {/* Start time (only time) */}
       <input
-        type="datetime-local"
+        type="time"
         required
-        value={input.end ? new Date(input.end).toISOString().slice(0, 16) : ""}
+        value={formatTimeInput(input.start)}
+        onChange={(e) => {
+          if (!input.date) return;
+
+          setInput((prev) => ({
+            ...prev,
+            start: buildLocalISO(input.date!, e.target.value),
+          }));
+        }}
         onClick={(e) => {
           const input = e.currentTarget as HTMLInputElement;
           input.showPicker?.();
         }}
-        onChange={(e) =>
+      />
+
+      {/* End time (only time) */}
+      <input
+        type="time"
+        required
+        value={formatTimeInput(input.end)}
+        onChange={(e) => {
+          if (!input.date) return;
+
           setInput((prev) => ({
             ...prev,
-            end: new Date(e.target.value).toISOString(),
-          }))
-        }
+            end: buildLocalISO(input.date!, e.target.value),
+          }));
+        }}
+        onClick={(e) => {
+          const input = e.currentTarget as HTMLInputElement;
+          input.showPicker?.();
+        }}
       />
 
       {/* Description */}

@@ -2,6 +2,7 @@ import type { MeetingRoom } from "./MeetingRoom";
 
 export type BookingInput = {
   roomId: string;
+  date: string;
   start: string;
   end: string;
   description: string;

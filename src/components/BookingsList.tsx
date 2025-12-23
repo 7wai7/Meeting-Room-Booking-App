@@ -50,7 +50,7 @@ function BookingItem({ data, onClick }: BookingItemProps) {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-  }).format(new Date(data.start));
+  }).format(new Date(data.date));
 
   const formattedStartTime = new Intl.DateTimeFormat("uk-UA", {
     hour: "2-digit",
